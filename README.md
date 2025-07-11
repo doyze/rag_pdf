@@ -35,9 +35,11 @@
 ## สิ่งที่ต้องมี (Prerequisites)
 
 - **Python 3.8+**
-- **Ollama:** สำหรับรัน Large Language Models (LLMs) สามารถดาวน์โหลดได้ที่ [ollama.com](https://ollama.com/)
+- **Ollama:** สำหรับรันโมเดล LLM ในเครื่อง (ดาวน์โหลดที่ [ollama.com](https://ollama.com/))
+- **LM Studio:** สำหรับรันโมเดล OCR (ดาวน์โหลดที่ [lmstudio.ai](https://lmstudio.ai/))
 - **Docker:** สำหรับรัน Qdrant
-- **Qdrant:** สำหรับ Vector Database เมื่อติดตั้งและรันผ่าน Docker แล้วจะสามารถเข้าถึง Dashboard ได้ที่ `http://localhost:6333/`
+- **Qdrant:** Vector Database (รันผ่าน Docker)
+- **Google Gemini API Key:** (มีให้ในโค้ดแล้ว) สำหรับใช้งานโมเดล Gemini
 
 ## การติดตั้ง
 
@@ -52,12 +54,23 @@
     docker run -p 6333:6333 qdrant/qdrant
     ```
 
-3.  **สร้าง LLM Models:**
-    - ตรวจสอบให้แน่ใจว่า Ollama Service กำลังทำงานอยู่
-    - รันสคริปต์ `model-create.bat` เพื่อดาวน์โหลดโมเดลพื้นฐานและสร้างโมเดลสำหรับโปรเจกต์นี้ (`pdf-qwen`, `pdf-llama`, `pdf-gemma`)
-    ```bash
-    model-create.bat
-    ```
+3.  **การตั้งค่าโมเดล (Model Setup):**
+    โปรเจกต์นี้รองรับโมเดล 3 ประเภท ซึ่งมีวิธีการตั้งค่าต่างกัน:
+
+    - **Ollama Models (ต้องใช้ Modelfile):**
+        - ตรวจสอบให้แน่ใจว่า Ollama Service กำลังทำงานอยู่
+        - รันสคริปต์ `model-create.bat` เพื่อสร้างโมเดล (`pdf-qwen`, `pdf-llama`, `pdf-gemma`) สำหรับโปรเจกต์นี้โดยเฉพาะ
+        ```bash
+        model-create.bat
+        ```
+
+    - **LM Studio (สำหรับ OCR):**
+        - เปิด LM Studio และค้นหาโมเดล `th-typhoon-v1.5-7b.Q8_0.gguf` และทำการดาวน์โหลด
+        - ไปที่แท็บ "Local Server" เลือกโมเดลที่ดาวน์โหลดมา และกด "Start Server"
+
+    - **Google Gemini (ไม่ต้องสร้างไฟล์):**
+        - โมเดล Gemini (`gemini-1.5-flash`, `gemini-1.5-pro-latest`) จะถูกเรียกใช้งานผ่าน API โดยตรง
+        - API Key ได้ถูกกำหนดไว้ในโค้ดแล้ว ไม่จำเป็นต้องตั้งค่าเพิ่มเติม
 
 4.  **สร้าง Virtual Environment (แนะนำ):**
     ```bash
@@ -71,27 +84,37 @@
       ```bash
       pip install -r requirements.txt
       ```
-    - **สำหรับผู้ใช้ GPU (NVIDIA):**
-      - **ขั้นตอนที่ 1:** ถอนการติดตั้ง PyTorch เวอร์ชันปัจจุบัน (ถ้ามี)
+- **สำหรับผู้ใช้ GPU (NVIDIA):**
+      - **ขั้นตอนที่ 1:** ตรวจสอบการรองรับ GPU
+        - รันสคริปต์ `pytoch_chack.py` เพื่อตรวจสอบว่า PyTorch สามารถมองเห็น GPU ของคุณได้หรือไม่
+        ```bash
+        python pytoch_chack.py
+        ```
+        - หากผลลัพธ์แสดงว่า "CUDA is available" หมายความว่าระบบพร้อมใช้งาน GPU แล้ว
+        - หากผลลัพธ์แสดงว่า "CUDA is not available" ให้ทำตามขั้นตอนต่อไปเพื่อติดตั้ง PyTorch เวอร์ชันที่รองรับ GPU
+      - **ขั้นตอนที่ 2:** ถอนการติดตั้ง PyTorch เวอร์ชันปัจจุบัน (ถ้ามี)
         ```bash
         pip uninstall torch torchaudio torchvision
         ```
-      - **ขั้นตอนที่ 2:** ติดตั้ง PyTorch เวอร์ชันที่รองรับ CUDA 12.1
+      - **ขั้นตอนที่ 3:** ติดตั้ง PyTorch เวอร์ชันที่รองรับ CUDA 12.1
         ```bash
         pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
         ```
-      - **ขั้นตอนที่ 3:** ติดตั้งไลบรารีที่เหลือ
+      - **ขั้นตอนที่ 4:** ติดตั้งไลบรารีที่เหลือ
         ```bash
         pip install -r requirements.txt
         ```
 
 ## การใช้งาน
 
-1.  **ตรวจสอบให้แน่ใจว่า Ollama และ Qdrant กำลังทำงานอยู่**
+1.  **ตรวจสอบให้แน่ใจว่า Service ที่เกี่ยวข้องทำงานอยู่:**
+    - Ollama (หากต้องการใช้โมเดลของ Ollama)
+    - LM Studio Server (หากต้องการใช้ OCR)
+    - Qdrant (Docker container)
 
 2.  **รันแอปพลิเคชัน:**
     ```bash
-    python rag_pdf.py
+    python rag_pdf2.py
     ```
 
 3.  **เปิดเว็บเบราว์เซอร์** และไปที่ URL ที่แสดงใน Terminal (โดยปกติคือ `http://127.0.0.1:7860`)

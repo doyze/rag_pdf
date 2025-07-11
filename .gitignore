@@ -1,14 +1,24 @@
-# Python-generated files
+# Environments
+.env
+.venv
+venv/
+venv.bak/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
 __pycache__/
-*.py[oc]
-build/
+*.pyc
+*.pyo
+*.pyd
 dist/
-wheels/
-*.egg-info
+build/
+*.egg-info/
+*.egg
 
-# data folder
-chroma_db_thai/
+# Data
 data/
-
-# Virtual environments
-venv

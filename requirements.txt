@@ -22,6 +22,7 @@ filelock==3.13.1
 flatbuffers==25.2.10
 fsspec==2024.6.1
 google-auth==2.40.3
+google-generativeai
 googleapis-common-protos==1.70.0
 gradio==5.36.2
 gradio_client==1.10.4
@@ -113,9 +114,6 @@ threadpoolctl==3.6.0
 tokenizers==0.21.2
 tomli==2.2.1
 tomlkit==0.13.3
-torch==2.7.1
-torchaudio==2.7.1
-torchvision==0.22.1
 tqdm==4.67.1
 transformers==4.53.1
 typer==0.16.0
@@ -128,3 +126,4 @@ watchfiles==1.1.0
 websocket-client==1.8.0
 websockets==15.0.1
 zipp==3.23.0
+openai
