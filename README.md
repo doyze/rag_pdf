@@ -76,9 +76,9 @@
         ```bash
         pip uninstall torch torchaudio torchvision
         ```
-      - **ขั้นตอนที่ 2:** ติดตั้ง PyTorch เวอร์ชันที่รองรับ CUDA 11.8
+      - **ขั้นตอนที่ 2:** ติดตั้ง PyTorch เวอร์ชันที่รองรับ CUDA 12.1
         ```bash
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
         ```
       - **ขั้นตอนที่ 3:** ติดตั้งไลบรารีที่เหลือ
         ```bash
