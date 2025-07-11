@@ -597,92 +597,7 @@ with gr.Blocks() as demo:
         # Chat Bot
         chatbot = gr.Chatbot(type="messages")
         with gr.Row():
-            msg = gr.Textbox(label="ถามคำถามเกี่ยวกับ PDF", elem_id="chat_msg", scale=9)
-            clear_chat = gr.Button("ล้าง", scale=1)
-
-        speech_to_text_html = """
-        <div style="display:flex; gap:10px; align-items:center;">
-            <button id="record_button_custom" title="บันทึกเสียง" style="font-size: 1.5em; background-color: #007bff; color: white; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 5px; width: 50px; height: 50px;">🎤</button>
-            <span id="speech_status_custom" style="font-style: italic; color: #6c757d;"></span>
-        </div>
-        <script>
-        function setup_speech_recognition() {
-            const button = document.getElementById('record_button_custom');
-            const status_label = document.getElementById('speech_status_custom');
-            const msg_input = document.querySelector('#chat_msg textarea');
-
-            if (!('webkitSpeechRecognition' in window)) {
-                status_label.innerText = "API ไม่รองรับ";
-                button.disabled = true;
-                return;
-            }
-
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'th-TH';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onstart = function() {
-                status_label.innerText = "กำลังฟัง...";
-                button.style.backgroundColor = '#dc3545'; // Red
-                window.recognition_active = true;
-            };
-
-            recognition.onresult = function(event) {
-                let final_transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        final_transcript += event.results[i][0].transcript;
-                    }
-                }
-                if (final_transcript) {
-                    msg_input.value += final_transcript.trim() + ' ';
-                    const input_event = new Event('input', { bubbles: true });
-                    msg_input.dispatchEvent(input_event);
-                }
-            };
-
-            recognition.onerror = function(event) {
-                status_label.innerText = "เกิดข้อผิดพลาด: " + event.error;
-                button.style.backgroundColor = '#007bff'; // Blue
-                window.recognition_active = false;
-            };
-
-            recognition.onend = function() {
-                status_label.innerText = "";
-                button.style.backgroundColor = '#007bff'; // Blue
-                window.recognition_active = false;
-            };
-
-            button.onclick = function() {
-                if (window.recognition_active) {
-                    recognition.stop();
-                } else {
-                    navigator.mediaDevices.getUserMedia({ audio: true })
-                        .then(function(stream) {
-                            window.localStream = stream;
-                            recognition.start();
-                        })
-                        .catch(function(err) {
-                            status_label.innerText = "ไม่ได้รับอนุญาตให้ใช้ไมโครโฟน";
-                            console.error('Error getting media stream', err);
-                        });
-                }
-            };
-        }
-
-        function runWhenReady() {
-            if (document.getElementById('record_button_custom')) {
-                setup_speech_recognition();
-            } else {
-                setTimeout(runWhenReady, 100);
-            }
-        }
-
-        runWhenReady();
-        </script>
-        """
-        gr.HTML(speech_to_text_html)
+            msg = gr.Textbox(label="ถามคำถามเกี่ยวกับ PDF", elem_id="chat_msg", scale=10)
         
         # Submit function 
         msg.submit(
@@ -695,7 +610,6 @@ with gr.Blocks() as demo:
             inputs=[chatbot, selected_model],
             outputs=chatbot
         )
-        clear_chat.click(lambda: [], None, chatbot, queue=False)
 
 if __name__ == "__main__":
     # The application will no longer clear data on startup.
