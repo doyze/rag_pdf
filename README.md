@@ -86,7 +86,7 @@
       ```bash
       pip install -r requirements.txt
       ```
-- **สำหรับผู้ใช้ GPU (NVIDIA):**
+**สำหรับผู้ใช้ GPU (NVIDIA):**
       - **ขั้นตอนที่ 1:** ตรวจสอบการรองรับ GPU
         - รันสคริปต์ `pytoch_chack.py` เพื่อตรวจสอบว่า PyTorch สามารถมองเห็น GPU ของคุณได้หรือไม่
         ```bash
